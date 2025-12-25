@@ -1,23 +1,62 @@
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, ContactShadows } from '@react-three/drei';
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import { useHandTracking } from './hooks/useHandTracking';
 import { usePinchZoom } from './hooks/usePinchZoom';
+import { useFullscreen } from './hooks/useFullscreen';
 import MagicParticles from './components/MagicParticles';
 import SnowParticles from './components/SnowParticles';
 import CelestialBackground from './components/CelestialBackground';
 import CelestialCore from './components/CelestialCore';
 import CameraController from './components/CameraController';
+import ScreenshotCapture from './components/ScreenshotCapture';
 import Overlay from './components/Overlay';
+import ControlPanel from './components/ControlPanel';
+import HelpOverlay from './components/HelpOverlay';
+import SettingsPanel from './components/SettingsPanel';
 
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
   const [expansionFactor, setExpansionFactor] = useState(1);
   const zoomLevel = usePinchZoom(landmarks);
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
+
+  // UI state
+  const [showHelp, setShowHelp] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [screenshotFunc, setScreenshotFunc] = useState<(() => void) | null>(null);
 
   const hasHands = landmarks && landmarks.length > 0;
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // H key for Help
+      if (e.key === 'h' || e.key === 'H') {
+        setShowHelp((prev) => !prev);
+      }
+      // S key for Screenshot
+      if (e.key === 's' || e.key === 'S') {
+        if (screenshotFunc) screenshotFunc();
+      }
+      // ESC key to close overlays
+      if (e.key === 'Escape') {
+        setShowHelp(false);
+        setShowSettings(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [screenshotFunc]);
+
+  const handleScreenshot = useCallback(() => {
+    if (screenshotFunc) {
+      screenshotFunc();
+    }
+  }, [screenshotFunc]);
 
   return (
     <div className="w-full h-screen bg-[#020005]">
@@ -44,21 +83,23 @@ const App: React.FC = () => {
         
         <Suspense fallback={null}>
           <CelestialBackground />
-          <MagicParticles 
-            landmarks={landmarks} 
-            onFactorChange={setExpansionFactor} 
+          <MagicParticles
+            landmarks={landmarks}
+            onFactorChange={setExpansionFactor}
           />
           <CelestialCore expansionFactor={expansionFactor} />
           <SnowParticles expansionFactor={expansionFactor} />
-          
-          <ContactShadows 
-            opacity={0.1} 
-            scale={40} 
-            blur={2} 
-            far={20} 
-            color="#000000" 
+
+          <ContactShadows
+            opacity={0.1}
+            scale={40}
+            blur={2}
+            far={20}
+            color="#000000"
             position={[0, -10, 0]}
           />
+
+          <ScreenshotCapture onCapture={(func) => setScreenshotFunc(() => func)} />
         </Suspense>
 
         <EffectComposer disableNormalPass>
@@ -79,6 +120,17 @@ const App: React.FC = () => {
         landmarks={landmarks}
         zoomLevel={zoomLevel}
       />
+
+      <ControlPanel
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={toggleFullscreen}
+        onScreenshot={handleScreenshot}
+        onShowHelp={() => setShowHelp(true)}
+        onShowSettings={() => setShowSettings(true)}
+      />
+
+      {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
     </div>
   );
 };
