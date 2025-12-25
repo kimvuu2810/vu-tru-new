@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { AppState, Landmark } from '../types';
 import { Loader2 } from 'lucide-react';
 import HandVisualizer from './HandVisualizer';
+import { useSettings } from '../contexts/SettingsContext';
 
 interface OverlayProps {
   appState: AppState;
@@ -13,6 +14,7 @@ interface OverlayProps {
 }
 
 const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLevel = 20 }) => {
+  const { settings } = useSettings();
   const handCount = landmarks ? landmarks.length : 0;
 
   // Tính toán pinch distance để hiển thị indicator
@@ -60,7 +62,7 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
       )}
 
       {/* Pinch Zoom Indicator */}
-      {isPinching && (
+      {settings.showZoomIndicator && isPinching && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
           <div className="bg-cyan-500/10 backdrop-blur-xl px-6 py-3 rounded-full border border-cyan-400/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
             <div className="flex items-center gap-3">
@@ -78,24 +80,26 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
       )}
 
       {/* Hand Radar / Constellation Map - Minimalist Corner UI */}
-      <div className="absolute bottom-12 right-12 pointer-events-auto">
-        <div className="relative w-40 h-40 bg-white/[0.02] backdrop-blur-3xl rounded-full border border-white/5 overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-          <div className="absolute inset-0 flex items-center justify-center opacity-10">
-            <div className="w-32 h-32 border border-white rounded-full" />
-            <div className="w-16 h-16 border border-white rounded-full absolute" />
-          </div>
-          
-          <Canvas camera={{ position: [0, 0, 5], fov: 40 }}>
-            <ambientLight intensity={1} />
-            <HandVisualizer landmarks={landmarks} />
-          </Canvas>
-          
-          {/* Status Indicator */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-            <div className={`w-1 h-1 rounded-full ${handCount > 0 ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-white/10'}`} />
+      {settings.showHandVisualizer && (
+        <div className="absolute bottom-12 right-12 pointer-events-auto">
+          <div className="relative w-40 h-40 bg-white/[0.02] backdrop-blur-3xl rounded-full border border-white/5 overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+              <div className="w-32 h-32 border border-white rounded-full" />
+              <div className="w-16 h-16 border border-white rounded-full absolute" />
+            </div>
+
+            <Canvas camera={{ position: [0, 0, 5], fov: 40 }}>
+              <ambientLight intensity={1} />
+              <HandVisualizer landmarks={landmarks} />
+            </Canvas>
+
+            {/* Status Indicator */}
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+              <div className={`w-1 h-1 rounded-full ${handCount > 0 ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-white/10'}`} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
