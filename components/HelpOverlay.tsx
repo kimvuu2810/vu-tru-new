@@ -23,10 +23,16 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
       detail: 'Hạt mở rộng thành thiên hà 3 cánh với hiệu ứng supernova',
     },
     {
+      icon: '🖱️',
+      title: 'Ctrl + Wheel Zoom',
+      description: 'Giữ Ctrl + Lăn chuột → Zoom',
+      detail: 'Lăn lên = zoom in vào lõi, lăn xuống = zoom out ra xa',
+    },
+    {
       icon: '🤏',
-      title: 'Pinch Zoom',
+      title: 'Pinch Zoom (Optional)',
       description: 'Chụm ngón cái + trỏ → Zoom',
-      detail: 'Gần nhau = zoom in, xa nhau = zoom out',
+      detail: 'Alternative: Gần nhau = zoom in, xa nhau = zoom out',
     },
     {
       icon: '🖐️',
@@ -41,6 +47,7 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
     { key: 'S', action: 'Screenshot' },
     { key: 'H', action: 'Show/Hide Help' },
     { key: 'ESC', action: 'Exit Fullscreen' },
+    { key: 'Ctrl+Wheel', action: 'Zoom In/Out' },
   ];
 
   return (
