@@ -1,0 +1,7 @@
+{
+  "name": "Celestial Christmas Glow",
+  "description": "An interactive 3D Christmas experience using hand gestures to morph thousands of glowing particles between a galaxy and a Christmas tree.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
