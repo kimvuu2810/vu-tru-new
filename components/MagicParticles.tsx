@@ -75,7 +75,7 @@ const MagicParticles: React.FC<MagicParticlesProps> = ({ landmarks, onFactorChan
     const starPalette = [
       new THREE.Color(COLORS.WHITE),
       new THREE.Color(COLORS.WHITE),
-      new THREE.Color(COLORS.CYAN),
+      new THREE.Color(COLORS.WHITE),
       new THREE.Color(COLORS.GOLD),
       new THREE.Color(COLORS.RED),
     ];
