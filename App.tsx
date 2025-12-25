@@ -4,16 +4,19 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, ContactShadows } from '@react-three/drei';
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import { useHandTracking } from './hooks/useHandTracking';
+import { usePinchZoom } from './hooks/usePinchZoom';
 import MagicParticles from './components/MagicParticles';
 import SnowParticles from './components/SnowParticles';
 import CelestialBackground from './components/CelestialBackground';
 import CelestialCore from './components/CelestialCore';
+import CameraController from './components/CameraController';
 import Overlay from './components/Overlay';
 
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
   const [expansionFactor, setExpansionFactor] = useState(1);
-  
+  const zoomLevel = usePinchZoom(landmarks);
+
   const hasHands = landmarks && landmarks.length > 0;
 
   return (
@@ -25,7 +28,8 @@ const App: React.FC = () => {
         <color attach="background" args={['#010003']} />
         
         <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={45} />
-        
+        <CameraController zoomLevel={zoomLevel} />
+
         <OrbitControls 
           enablePan={false} 
           maxDistance={40} 
@@ -69,10 +73,11 @@ const App: React.FC = () => {
         </EffectComposer>
       </Canvas>
 
-      <Overlay 
-        appState={appState} 
-        videoRef={videoRef} 
+      <Overlay
+        appState={appState}
+        videoRef={videoRef}
         landmarks={landmarks}
+        zoomLevel={zoomLevel}
       />
     </div>
   );
