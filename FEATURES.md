@@ -20,7 +20,7 @@
   - Hạt lấp lánh mạnh hơn
   - Core energy giảm độ sáng
 
-### 3. 🤏 Pinch Zoom (MỚI!) → Phóng To/Thu Nhỏ
+### 3. 🤏 Pinch Zoom → Phóng To/Thu Nhỏ
 - **Cách thực hiện**: Chụm ngón cái và ngón trỏ lại gần nhau (giống pinch trên điện thoại)
 - **Hiệu ứng**:
   - **Khoảng cách nhỏ** (ngón tay gần nhau) = **Zoom In** (camera lại gần)
@@ -28,6 +28,48 @@
   - Hiển thị indicator "Zoom X%" ở phía trên màn hình khi đang pinch
   - Zoom mượt mà với interpolation
   - Dải zoom: 8 → 35 units (camera Z position)
+
+## ⌨️ Keyboard Shortcuts (MỚI!)
+
+| Phím | Chức năng |
+|------|-----------|
+| `F` | Toggle Fullscreen (vào/thoát toàn màn hình) |
+| `S` | Screenshot (chụp ảnh màn hình 3D) |
+| `H` | Show/Hide Help (hiện/ẩn hướng dẫn) |
+| `ESC` | Exit Fullscreen / Close Overlays (thoát hoặc đóng popup) |
+
+## 🎛️ UI Controls (MỚI!)
+
+### Control Panel (Góc Phải Trên)
+Panel điều khiển với 4 nút chính:
+
+1. **🖥️ Fullscreen Button**
+   - Click hoặc nhấn `F` để vào/thoát fullscreen
+   - Trải nghiệm immersive không bị giới hạn bởi trình duyệt
+   - ESC để thoát nhanh
+
+2. **📸 Screenshot Button**
+   - Click hoặc nhấn `S` để chụp ảnh
+   - Tự động download file PNG
+   - Format: `celestial-glow-[timestamp].png`
+   - Chất lượng cao, full resolution
+
+3. **❓ Help Button**
+   - Click hoặc nhấn `H` để xem hướng dẫn
+   - Modal overlay với:
+     - Danh sách tất cả gestures
+     - Keyboard shortcuts reference
+     - Tips & tricks
+   - Click backdrop hoặc ESC để đóng
+
+4. **⚙️ Settings Button**
+   - Panel cài đặt chi tiết
+   - Sidebar slide-in từ bên phải
+   - Các mục:
+     - **Performance**: Particle quality, visual effects toggle
+     - **Hand Tracking**: Detection sensitivity, gesture smoothing
+     - **Display**: Show/hide UI elements
+     - **Statistics**: Real-time stats (particles, FPS, hands detected)
 
 ## 📊 Chi Tiết Kỹ Thuật Pinch Zoom
 
@@ -193,7 +235,48 @@ Các thông số có thể điều chỉnh trong `constants.ts`:
 
 ## 📝 Changelog
 
-### v1.1.0 (Mới nhất)
+### v1.2.0 (Mới nhất) - Complete UI & UX Update
+- 🖥️ **Fullscreen Mode**
+  - Native browser fullscreen API
+  - Keyboard shortcut: `F` key
+  - Immersive experience không bị giới hạn trình duyệt
+  - ESC để thoát nhanh
+
+- 📸 **Screenshot Capture**
+  - Chụp ảnh 3D scene với chất lượng cao
+  - Auto-download PNG file
+  - Keyboard shortcut: `S` key
+  - Format: `celestial-glow-[timestamp].png`
+
+- ❓ **Help Overlay**
+  - Interactive tutorial modal
+  - Hướng dẫn đầy đủ về gestures
+  - Keyboard shortcuts reference
+  - Tips & tricks cho trải nghiệm tốt nhất
+  - Toggle bằng `H` key
+
+- ⚙️ **Settings Panel**
+  - Sidebar panel từ bên phải
+  - Performance controls
+  - Hand tracking sensitivity
+  - Display preferences
+  - Real-time statistics
+
+- ⌨️ **Enhanced Keyboard Shortcuts**
+  - F: Fullscreen toggle
+  - S: Screenshot
+  - H: Help overlay
+  - ESC: Exit/Close
+
+- 🎨 **Control Panel UI**
+  - 4 nút điều khiển ở góc phải trên
+  - Tooltips khi hover
+  - Modern glassmorphism design
+  - Smooth transitions
+
+- 📊 **Build Size**: ~1.19 MB (330 KB gzipped)
+
+### v1.1.0
 - ✨ **Thêm Pinch Zoom gesture**
   - Zoom in/out bằng ngón cái + ngón trỏ
   - Visual feedback với indicator

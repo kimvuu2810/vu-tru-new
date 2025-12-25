@@ -8,6 +8,34 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/drive/1zMQyiWyVn7pk8Nve-TWF1aRaVfCBV-71
 
+## ✨ Features
+
+- 🎮 **Hand Gesture Control**: Fist → Heart shape, Open hand → Galaxy spiral
+- 🤏 **Pinch Zoom**: Zoom in/out with thumb + index finger
+- 🖥️ **Fullscreen Mode**: Immersive full-screen experience
+- 📸 **Screenshot Capture**: Save your creations
+- ❓ **Interactive Help**: Built-in tutorial overlay
+- ⚙️ **Settings Panel**: Customize your experience
+- ⌨️ **Keyboard Shortcuts**: Quick access to all features
+
+## 🎯 Quick Start
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `F` | Toggle Fullscreen |
+| `S` | Take Screenshot |
+| `H` | Show/Hide Help |
+| `ESC` | Exit Fullscreen / Close Overlays |
+
+### Hand Gestures
+
+- 👊 **Fist** → Heart shape
+- ✋ **Open Hand** → Galaxy spiral
+- 🤏 **Pinch** (thumb + index) → Zoom in/out
+- 🖐️ **Move Hand** → Magnetic particle attraction
+
 ## Run Locally
 
 **Prerequisites:**  Node.js
@@ -18,6 +46,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1zMQyiWyVn7pk8Nve-TWF1a
    `npm run dev`
 3. Open browser at http://localhost:3000
 4. Allow camera permissions when prompted
+5. Press `H` for help and instructions
 
 ## Build for Production
 
