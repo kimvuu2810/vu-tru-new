@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, ContactShadows } from '@react-three/drei';
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import { useHandTracking } from './hooks/useHandTracking';
-import { usePinchZoom } from './hooks/usePinchZoom';
+import { useCombinedZoom } from './hooks/useCombinedZoom';
 import { useFullscreen } from './hooks/useFullscreen';
 import { useSettings } from './contexts/SettingsContext';
 import MagicParticles from './components/MagicParticles';
@@ -25,7 +25,7 @@ import DepthFog from './components/DepthFog';
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
   const [expansionFactor, setExpansionFactor] = useState(1);
-  const zoomLevel = usePinchZoom(landmarks);
+  const zoomLevel = useCombinedZoom(landmarks);
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const { settings } = useSettings();
 
