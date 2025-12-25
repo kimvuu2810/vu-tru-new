@@ -6,6 +6,7 @@ import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocess
 import { useHandTracking } from './hooks/useHandTracking';
 import { usePinchZoom } from './hooks/usePinchZoom';
 import { useFullscreen } from './hooks/useFullscreen';
+import { useSettings } from './contexts/SettingsContext';
 import MagicParticles from './components/MagicParticles';
 import SnowParticles from './components/SnowParticles';
 import CelestialBackground from './components/CelestialBackground';
@@ -16,12 +17,14 @@ import Overlay from './components/Overlay';
 import ControlPanel from './components/ControlPanel';
 import HelpOverlay from './components/HelpOverlay';
 import SettingsPanel from './components/SettingsPanel';
+import FPSCounter from './components/FPSCounter';
 
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
   const [expansionFactor, setExpansionFactor] = useState(1);
   const zoomLevel = usePinchZoom(landmarks);
   const { isFullscreen, toggleFullscreen } = useFullscreen();
+  const { settings } = useSettings();
 
   // UI state
   const [showHelp, setShowHelp] = useState(false);
@@ -69,11 +72,11 @@ const App: React.FC = () => {
         <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={45} />
         <CameraController zoomLevel={zoomLevel} />
 
-        <OrbitControls 
-          enablePan={false} 
-          maxDistance={40} 
-          minDistance={10} 
-          autoRotate={!hasHands} 
+        <OrbitControls
+          enablePan={false}
+          maxDistance={40}
+          minDistance={10}
+          autoRotate={settings.autoRotate && !hasHands}
           autoRotateSpeed={0.3}
           minPolarAngle={0.5}
           maxPolarAngle={Math.PI - 0.5}
@@ -129,8 +132,10 @@ const App: React.FC = () => {
         onShowSettings={() => setShowSettings(true)}
       />
 
+      <FPSCounter />
+
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
-      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} landmarks={landmarks} />}
     </div>
   );
 };
