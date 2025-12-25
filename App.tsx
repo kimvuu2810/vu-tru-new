@@ -18,6 +18,9 @@ import ControlPanel from './components/ControlPanel';
 import HelpOverlay from './components/HelpOverlay';
 import SettingsPanel from './components/SettingsPanel';
 import FPSCounter from './components/FPSCounter';
+import InnerCore from './components/InnerCore';
+import SpeedLines from './components/SpeedLines';
+import DepthFog from './components/DepthFog';
 
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
@@ -85,12 +88,24 @@ const App: React.FC = () => {
         <ambientLight intensity={0.1} />
         
         <Suspense fallback={null}>
+          {/* Depth Fog - Dynamic fog based on zoom */}
+          <DepthFog zoomLevel={zoomLevel} />
+
           <CelestialBackground />
+
           <MagicParticles
             landmarks={landmarks}
             onFactorChange={setExpansionFactor}
           />
+
           <CelestialCore expansionFactor={expansionFactor} />
+
+          {/* Inner Core - Reveals when zooming in */}
+          <InnerCore zoomLevel={zoomLevel} />
+
+          {/* Speed Lines - Shows when zooming fast */}
+          <SpeedLines zoomLevel={zoomLevel} />
+
           <SnowParticles expansionFactor={expansionFactor} />
 
           <ContactShadows
