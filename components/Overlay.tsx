@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AppState, Landmark } from '../types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Move } from 'lucide-react';
 import HandVisualizer from './HandVisualizer';
 import { useSettings } from '../contexts/SettingsContext';
 
@@ -14,8 +14,11 @@ interface OverlayProps {
 }
 
 const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLevel = 20 }) => {
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const handCount = landmarks ? landmarks.length : 0;
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const visualizerRef = useRef<HTMLDivElement>(null);
 
   // Tính toán pinch distance để hiển thị indicator
   const isPinching = React.useMemo(() => {
@@ -37,6 +40,73 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
 
   // Tính zoom percentage (0-100%)
   const zoomPercentage = Math.round(((35 - zoomLevel) / (35 - 8)) * 100);
+
+  // Drag and drop handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!visualizerRef.current) return;
+    setIsDragging(true);
+    const rect = visualizerRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!visualizerRef.current) return;
+    setIsDragging(true);
+    const touch = e.touches[0];
+    const rect = visualizerRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    });
+  };
+
+  useEffect(() => {
+    const handleMove = (clientX: number, clientY: number) => {
+      if (!isDragging) return;
+
+      const newX = window.innerWidth - clientX + dragOffset.x - 160; // 160 = circle width
+      const newY = window.innerHeight - clientY + dragOffset.y - 160;
+
+      // Constrain to viewport
+      const constrainedX = Math.max(0, Math.min(newX, window.innerWidth - 160));
+      const constrainedY = Math.max(0, Math.min(newY, window.innerHeight - 160));
+
+      updateSettings({
+        visualizerPosition: { x: constrainedX, y: constrainedY },
+      });
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      handleMove(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleEnd);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleEnd);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleEnd);
+      };
+    }
+  }, [isDragging, dragOffset, updateSettings]);
 
   return (
     <div className="fixed inset-0 pointer-events-none flex flex-col items-center justify-center">
@@ -79,10 +149,29 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
         </div>
       )}
 
-      {/* Hand Radar / Constellation Map - Minimalist Corner UI */}
+      {/* Hand Radar / Constellation Map - Draggable Minimalist Corner UI */}
       {settings.showHandVisualizer && (
-        <div className="absolute bottom-12 right-12 pointer-events-auto">
-          <div className="relative w-40 h-40 bg-white/[0.02] backdrop-blur-3xl rounded-full border border-white/5 overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+        <div
+          ref={visualizerRef}
+          className="absolute pointer-events-auto group"
+          style={{
+            bottom: `${settings.visualizerPosition.y}px`,
+            right: `${settings.visualizerPosition.x}px`,
+            cursor: isDragging ? 'grabbing' : 'grab',
+          }}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+        >
+          <div className={`relative w-40 h-40 bg-white/[0.02] backdrop-blur-3xl rounded-full border overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-all ${
+            isDragging ? 'border-white/30 scale-105' : 'border-white/5'
+          }`}>
+            {/* Drag Indicator */}
+            <div className={`absolute top-2 left-0 right-0 flex justify-center transition-opacity ${
+              isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'
+            }`}>
+              <Move className="w-3 h-3 text-white/50" />
+            </div>
+
             <div className="absolute inset-0 flex items-center justify-center opacity-10">
               <div className="w-32 h-32 border border-white rounded-full" />
               <div className="w-16 h-16 border border-white rounded-full absolute" />
@@ -97,6 +186,15 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
             <div className="absolute bottom-4 left-0 right-0 flex justify-center">
               <div className={`w-1 h-1 rounded-full ${handCount > 0 ? 'bg-white/80 shadow-[0_0_8px_white]' : 'bg-white/10'}`} />
             </div>
+
+            {/* Drag Hint */}
+            {!isDragging && (
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="bg-black/80 px-2 py-1 rounded-md">
+                  <p className="text-[8px] text-white/70 uppercase tracking-wider">Drag to move</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

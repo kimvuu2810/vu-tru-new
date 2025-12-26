@@ -13,6 +13,10 @@ export interface AppSettings {
   showHandVisualizer: boolean;
   showZoomIndicator: boolean;
   autoRotate: boolean;
+  showTutorial: boolean;
+
+  // Hand Visualizer Position (draggable)
+  visualizerPosition: { x: number; y: number };
 
   // Stats
   showFPS: boolean;
@@ -26,6 +30,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   showHandVisualizer: true,
   showZoomIndicator: true,
   autoRotate: true,
+  showTutorial: true,
+  visualizerPosition: { x: 48, y: 48 }, // bottom-12 right-12 in pixels
   showFPS: false,
 };
 
