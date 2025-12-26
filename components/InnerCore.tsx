@@ -22,7 +22,7 @@ const InnerCore: React.FC<InnerCoreProps> = ({ zoomLevel }) => {
   const rings1 = useMemo(() => {
     const positions = new Float32Array(600 * 3);
     const colors = new Float32Array(600 * 3);
-    const color = new THREE.Color('#00ffff');
+    const color = new THREE.Color('#ffffff');
 
     for (let i = 0; i < 600; i++) {
       const angle = (i / 600) * Math.PI * 2;
