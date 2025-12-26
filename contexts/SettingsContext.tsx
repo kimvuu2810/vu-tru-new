@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface AppSettings {
   // Performance
@@ -39,24 +39,6 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
-
-  // Load settings from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('celestial-glow-settings');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSettings({ ...DEFAULT_SETTINGS, ...parsed });
-      } catch (e) {
-        console.error('Failed to parse settings:', e);
-      }
-    }
-  }, []);
-
-  // Save settings to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('celestial-glow-settings', JSON.stringify(settings));
-  }, [settings]);
 
   const updateSettings = (newSettings: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
