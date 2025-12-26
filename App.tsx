@@ -30,11 +30,12 @@ import DepthFog from './components/DepthFog';
 const App: React.FC = () => {
   const { landmarks, appState, videoRef } = useHandTracking();
   const [expansionFactor, setExpansionFactor] = useState(1);
-  const zoomLevel = useCombinedZoom(landmarks);
+  const [isExploding, setIsExploding] = useState(false);
+  const [explosionCooldown, setExplosionCooldown] = useState(false);
+  const zoomLevel = useCombinedZoom(landmarks, isExploding || explosionCooldown);
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const { settings } = useSettings();
   const { isHeartGesture, heartPosition } = useHeartGesture(landmarks);
-  const [isExploding, setIsExploding] = useState(false);
 
   // UI state
   const [showHelp, setShowHelp] = useState(false);
@@ -47,14 +48,21 @@ const App: React.FC = () => {
   // Detect core explosion (khi đi sâu vào trong)
   const isAtCore = zoomLevel <= -5;
 
-  // Handle explosion callback
+  // Handle explosion callback - Vòng lặp: nổ → vũ trụ sơ khai → tụ lại thành trái tim
   const handleExplosion = useCallback(() => {
     setIsExploding(true);
+    setExplosionCooldown(true);
 
-    // Keep explosion active longer to see full effect
+    // Explosion phase: 6 giây particles tự do
     setTimeout(() => {
       setIsExploding(false);
     }, 6000);
+
+    // Cooldown + reform phase: 10 giây để particles từ từ tụ lại thành trái tim
+    // Trong thời gian này không cho zoom vào lõi nữa
+    setTimeout(() => {
+      setExplosionCooldown(false);
+    }, 16000); // 6s explosion + 10s reform = 16s total
   }, []);
 
   // Show tutorial on first load if enabled

@@ -48,8 +48,9 @@ export const usePinchZoom = (landmarks: Landmark[][] | null): number => {
       )
     );
 
-    // Áp dụng easing curve để zoom mượt hơn (ease-out)
-    const easedDistance = 1 - Math.pow(1 - normalizedDistance, 2);
+    // Áp dụng easing curve để zoom càng sâu càng chậm
+    // Sử dụng power 4 để tạo độ chậm dần khi tiến gần core
+    const easedDistance = Math.pow(normalizedDistance, 4);
 
     // Tính camera position mới
     const targetZoom = PINCH_ZOOM.MIN_CAMERA_Z +
