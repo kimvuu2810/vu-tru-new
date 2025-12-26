@@ -10,14 +10,12 @@ interface CameraControllerProps {
  * Enhanced Camera Controller với smooth journey effect
  * - Z position changes
  * - FOV changes (zoom in = wider FOV for immersion)
- * - Subtle camera shake when zooming fast
+ * - Smooth camera movements
  */
 const CameraController: React.FC<CameraControllerProps> = ({ zoomLevel }) => {
   const { camera } = useThree();
   const currentZ = useRef(20);
   const currentFOV = useRef(45);
-  const prevZoom = useRef(zoomLevel);
-  const shakeOffset = useRef(new THREE.Vector3());
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
@@ -33,27 +31,10 @@ const CameraController: React.FC<CameraControllerProps> = ({ zoomLevel }) => {
     const targetFOV = 45 + zoomFactor * 15; // 45-60 degrees
     currentFOV.current += (targetFOV - currentFOV.current) * 0.05;
 
-    // Calculate zoom speed for shake effect
-    const zoomSpeed = Math.abs(zoomLevel - prevZoom.current);
-    prevZoom.current = zoomLevel;
-
-    // Camera shake khi zoom nhanh
-    if (zoomSpeed > 0.1) {
-      const shakeAmount = Math.min(zoomSpeed * 0.3, 0.2);
-      shakeOffset.current.set(
-        (Math.random() - 0.5) * shakeAmount,
-        (Math.random() - 0.5) * shakeAmount,
-        0
-      );
-    } else {
-      // Smooth return to center
-      shakeOffset.current.multiplyScalar(0.9);
-    }
-
-    // Apply camera transforms
+    // Apply camera transforms - smooth only, no shake
     camera.position.z = currentZ.current;
-    camera.position.x = shakeOffset.current.x;
-    camera.position.y = shakeOffset.current.y;
+    camera.position.x = 0;
+    camera.position.y = 0;
 
     // Update FOV
     if (camera instanceof THREE.PerspectiveCamera) {
