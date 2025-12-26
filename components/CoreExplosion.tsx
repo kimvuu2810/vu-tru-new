@@ -9,9 +9,10 @@ interface CoreExplosionProps {
 }
 
 /**
- * Epic Core Explosion Effect - Nổ tung EPIC khi đi vào trong lõi
+ * BIG BANG - Vụ nổ tạo vũ trụ sơ khai
+ * Toàn bộ màn hình tràn ngập particles tự do
  */
-const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1, onExplode }) => {
+const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = -5, onExplode }) => {
   const mainParticlesRef = useRef<THREE.Points>(null);
   const trailParticlesRef = useRef<THREE.Points>(null);
   const ringsRef = useRef<THREE.Group>(null);
@@ -19,7 +20,7 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
   const explosionTime = useRef(0);
   const hasExploded = useRef(false);
 
-  // Trigger explosion
+  // Trigger BIG BANG explosion
   useEffect(() => {
     if (zoomLevel <= threshold && !hasExploded.current) {
       setIsExploding(true);
@@ -28,44 +29,44 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
 
       if (onExplode) onExplode();
 
-      // Reset sau 5 giây
+      // Keep particles visible much longer (10 seconds)
       setTimeout(() => {
         setIsExploding(false);
         hasExploded.current = false;
-      }, 5000);
-    } else if (zoomLevel > threshold + 3) {
+      }, 10000);
+    } else if (zoomLevel > threshold + 5) {
       hasExploded.current = false;
       setIsExploding(false);
     }
   }, [zoomLevel, threshold, onExplode]);
 
-  // Main explosion particles - 4000 particles
+  // BIG BANG - 8000 particles tràn ngập màn hình
   const mainParticles = useMemo(() => {
-    const count = 4000;
+    const count = 8000;
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
     const velocities = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
-      // Start từ center
-      positions[i * 3] = (Math.random() - 0.5) * 0.5;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      // Start from center point
+      positions[i * 3] = (Math.random() - 0.5) * 0.2;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 0.2;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.2;
 
-      // Spherical explosion velocity
+      // MASSIVE explosion velocity - fill entire screen
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const speed = 2 + Math.random() * 3;
+      const speed = 8 + Math.random() * 12; // Much faster!
 
       velocities[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
       velocities[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
       velocities[i * 3 + 2] = Math.cos(phi) * speed;
 
-      // Gradient: white -> gold -> orange -> red
+      // Vũ trụ sơ khai colors: white, gold, cyan, pink, purple
       const t = Math.random();
-      if (t < 0.25) {
-        // Pure white
+      if (t < 0.3) {
+        // Pure white (stars)
         colors[i * 3] = 1;
         colors[i * 3 + 1] = 1;
         colors[i * 3 + 2] = 1;
@@ -74,51 +75,70 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
         colors[i * 3] = 1;
         colors[i * 3 + 1] = 0.84;
         colors[i * 3 + 2] = 0.2;
-      } else if (t < 0.75) {
-        // Orange
+      } else if (t < 0.65) {
+        // Cyan (cosmic dust)
+        colors[i * 3] = 0.4;
+        colors[i * 3 + 1] = 0.9;
+        colors[i * 3 + 2] = 1;
+      } else if (t < 0.8) {
+        // Pink/Red (nebula)
         colors[i * 3] = 1;
-        colors[i * 3 + 1] = 0.5;
-        colors[i * 3 + 2] = 0;
+        colors[i * 3 + 1] = 0.2;
+        colors[i * 3 + 2] = 0.5;
       } else {
-        // Red/Pink
-        colors[i * 3] = 1;
-        colors[i * 3 + 1] = 0.1;
-        colors[i * 3 + 2] = 0.3;
+        // Purple (dark matter)
+        colors[i * 3] = 0.6;
+        colors[i * 3 + 1] = 0.2;
+        colors[i * 3 + 2] = 0.8;
       }
 
-      sizes[i] = 0.1 + Math.random() * 0.3;
+      sizes[i] = 0.15 + Math.random() * 0.4; // Bigger particles
     }
 
     return { positions, colors, sizes, velocities };
   }, []);
 
-  // Trail particles - 2000 smaller particles
+  // Secondary particles - 4000 cosmic dust
   const trailParticles = useMemo(() => {
-    const count = 2000;
+    const count = 4000;
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
     const velocities = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 0.3;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 0.3;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
+      positions[i * 3] = (Math.random() - 0.5) * 0.15;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 0.15;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.15;
 
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const speed = 1 + Math.random() * 2;
+      const speed = 5 + Math.random() * 8;
 
       velocities[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
       velocities[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
       velocities[i * 3 + 2] = Math.cos(phi) * speed;
 
-      // Softer colors for trails
-      colors[i * 3] = 1;
-      colors[i * 3 + 1] = 0.7 + Math.random() * 0.3;
-      colors[i * 3 + 2] = 0.3 + Math.random() * 0.3;
+      // Softer, ethereal colors
+      const t = Math.random();
+      if (t < 0.4) {
+        // Pale white
+        colors[i * 3] = 0.9;
+        colors[i * 3 + 1] = 0.95;
+        colors[i * 3 + 2] = 1;
+      } else if (t < 0.7) {
+        // Pale gold
+        colors[i * 3] = 1;
+        colors[i * 3 + 1] = 0.9;
+        colors[i * 3 + 2] = 0.6;
+      } else {
+        // Pale pink
+        colors[i * 3] = 1;
+        colors[i * 3 + 1] = 0.7;
+        colors[i * 3 + 2] = 0.8;
+      }
 
-      sizes[i] = 0.05 + Math.random() * 0.1;
+      sizes[i] = 0.08 + Math.random() * 0.15;
     }
 
     return { positions, colors, sizes, velocities };
@@ -129,68 +149,85 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
 
     explosionTime.current += delta;
     const t = explosionTime.current;
+    const time = state.clock.getElapsedTime();
 
-    // Main particles
+    // Main particles - BIG BANG expansion
     if (mainParticlesRef.current) {
       const posArray = mainParticlesRef.current.geometry.attributes.position.array as Float32Array;
       const sizeArray = mainParticlesRef.current.geometry.attributes.size.array as Float32Array;
       const count = posArray.length / 3;
 
       for (let i = 0; i < count; i++) {
-        // Apply velocity với friction
-        posArray[i * 3] += mainParticles.velocities[i * 3] * delta * 5;
-        posArray[i * 3 + 1] += mainParticles.velocities[i * 3 + 1] * delta * 5;
-        posArray[i * 3 + 2] += mainParticles.velocities[i * 3 + 2] * delta * 5;
+        // Fast expansion initially, then slow drift
+        const speedMultiplier = t < 1 ? 10 : 3;
+        posArray[i * 3] += mainParticles.velocities[i * 3] * delta * speedMultiplier;
+        posArray[i * 3 + 1] += mainParticles.velocities[i * 3 + 1] * delta * speedMultiplier;
+        posArray[i * 3 + 2] += mainParticles.velocities[i * 3 + 2] * delta * speedMultiplier;
 
-        // Slow down
-        mainParticles.velocities[i * 3] *= 0.97;
-        mainParticles.velocities[i * 3 + 1] *= 0.97;
-        mainParticles.velocities[i * 3 + 2] *= 0.97;
+        // Very slow velocity decay - particles float freely
+        const decayFactor = t < 2 ? 0.98 : 0.995; // Almost no friction after 2s
+        mainParticles.velocities[i * 3] *= decayFactor;
+        mainParticles.velocities[i * 3 + 1] *= decayFactor;
+        mainParticles.velocities[i * 3 + 2] *= decayFactor;
 
-        // Size pulsing
-        sizeArray[i] = mainParticles.sizes[i] * (1 + Math.sin(t * 3 + i) * 0.3);
+        // Gentle floating motion
+        if (t > 2) {
+          posArray[i * 3] += Math.sin(time * 0.5 + i) * 0.01;
+          posArray[i * 3 + 1] += Math.cos(time * 0.4 + i * 1.3) * 0.01;
+        }
+
+        // Twinkling like stars
+        sizeArray[i] = mainParticles.sizes[i] * (0.8 + Math.sin(time * 2 + i) * 0.3);
       }
 
       mainParticlesRef.current.geometry.attributes.position.needsUpdate = true;
       mainParticlesRef.current.geometry.attributes.size.needsUpdate = true;
 
-      const opacity = Math.max(0, 1 - t / 4);
+      // Keep visible much longer
+      const opacity = Math.max(0.3, 1 - t / 8); // Stay visible until t=8
       (mainParticlesRef.current.material as THREE.PointsMaterial).opacity = opacity;
     }
 
-    // Trail particles
+    // Cosmic dust particles
     if (trailParticlesRef.current) {
       const posArray = trailParticlesRef.current.geometry.attributes.position.array as Float32Array;
       const count = posArray.length / 3;
 
       for (let i = 0; i < count; i++) {
-        posArray[i * 3] += trailParticles.velocities[i * 3] * delta * 3;
-        posArray[i * 3 + 1] += trailParticles.velocities[i * 3 + 1] * delta * 3;
-        posArray[i * 3 + 2] += trailParticles.velocities[i * 3 + 2] * delta * 3;
+        const speedMultiplier = t < 1.5 ? 6 : 2;
+        posArray[i * 3] += trailParticles.velocities[i * 3] * delta * speedMultiplier;
+        posArray[i * 3 + 1] += trailParticles.velocities[i * 3 + 1] * delta * speedMultiplier;
+        posArray[i * 3 + 2] += trailParticles.velocities[i * 3 + 2] * delta * speedMultiplier;
 
-        trailParticles.velocities[i * 3] *= 0.95;
-        trailParticles.velocities[i * 3 + 1] *= 0.95;
-        trailParticles.velocities[i * 3 + 2] *= 0.95;
+        // Free floating
+        trailParticles.velocities[i * 3] *= 0.996;
+        trailParticles.velocities[i * 3 + 1] *= 0.996;
+        trailParticles.velocities[i * 3 + 2] *= 0.996;
+
+        // Gentle drift
+        if (t > 1.5) {
+          posArray[i * 3 + 1] += Math.sin(time * 0.3 + i * 2) * 0.008;
+        }
       }
 
       trailParticlesRef.current.geometry.attributes.position.needsUpdate = true;
-      const opacity = Math.max(0, 1 - t / 3);
+      const opacity = Math.max(0.2, 1 - t / 7);
       (trailParticlesRef.current.material as THREE.PointsMaterial).opacity = opacity;
     }
 
-    // Shockwave rings
+    // Massive shockwave rings
     if (ringsRef.current) {
       ringsRef.current.children.forEach((ring, index) => {
-        const delay = index * 0.2;
+        const delay = index * 0.15;
         const ringT = Math.max(0, t - delay);
-        const scale = 1 + ringT * 12;
+        const scale = 1 + ringT * 25; // MUCH bigger rings
         ring.scale.setScalar(scale);
 
-        const opacity = Math.max(0, 1 - ringT / 2);
+        const opacity = Math.max(0, 1 - ringT / 2.5);
         (ring as THREE.Mesh).material = new THREE.MeshBasicMaterial({
-          color: index === 0 ? '#ffffff' : index === 1 ? '#ffd700' : '#ff3366',
+          color: index === 0 ? '#ffffff' : index === 1 ? '#00ffff' : '#ff00ff',
           transparent: true,
-          opacity: opacity * 0.6,
+          opacity: opacity * 0.5,
           side: THREE.DoubleSide,
           blending: THREE.AdditiveBlending,
         });
@@ -225,7 +262,7 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
           />
         </bufferGeometry>
         <pointsMaterial
-          size={1}
+          size={2}
           sizeAttenuation
           vertexColors
           transparent
@@ -258,7 +295,7 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
           />
         </bufferGeometry>
         <pointsMaterial
-          size={1}
+          size={2}
           sizeAttenuation
           vertexColors
           transparent
@@ -302,10 +339,11 @@ const CoreExplosion: React.FC<CoreExplosionProps> = ({ zoomLevel, threshold = 1,
         </mesh>
       </group>
 
-      {/* Central Flash Light */}
-      <pointLight intensity={100} distance={30} color="#ffffff" decay={2} />
-      <pointLight intensity={50} distance={20} color="#ffd700" decay={2} position={[0, 1, 0]} />
-      <pointLight intensity={50} distance={20} color="#ff3366" decay={2} position={[0, -1, 0]} />
+      {/* Massive light burst */}
+      <pointLight intensity={200} distance={50} color="#ffffff" decay={2} />
+      <pointLight intensity={100} distance={40} color="#00ffff" decay={2} position={[2, 2, 0]} />
+      <pointLight intensity={100} distance={40} color="#ff00ff" decay={2} position={[-2, -2, 0]} />
+      <pointLight intensity={80} distance={35} color="#ffd700" decay={2} position={[0, 0, 3]} />
     </group>
   );
 };

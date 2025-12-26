@@ -44,19 +44,17 @@ const App: React.FC = () => {
 
   const hasHands = landmarks && landmarks.length > 0;
 
-  // Detect core explosion
-  const isAtCore = zoomLevel <= 1;
+  // Detect core explosion (khi đi sâu vào trong)
+  const isAtCore = zoomLevel <= -5;
 
   // Handle explosion callback
   const handleExplosion = useCallback(() => {
     setIsExploding(true);
 
-    // Auto zoom out sau 1.5s
+    // Keep explosion active longer to see full effect
     setTimeout(() => {
-      // Trigger auto zoom out bằng cách release hands
-      // User sẽ thấy smooth zoom out
       setIsExploding(false);
-    }, 4000);
+    }, 6000);
   }, []);
 
   // Show tutorial on first load if enabled
@@ -145,8 +143,8 @@ const App: React.FC = () => {
           {/* Speed Lines - Shows when zooming fast */}
           <SpeedLines zoomLevel={zoomLevel} />
 
-          {/* Core Explosion - Triggers when reaching the core */}
-          <CoreExplosion zoomLevel={zoomLevel} threshold={1} onExplode={handleExplosion} />
+          {/* Core Explosion - Triggers when reaching the deep core */}
+          <CoreExplosion zoomLevel={zoomLevel} threshold={-5} onExplode={handleExplosion} />
 
           <SnowParticles expansionFactor={expansionFactor} />
 
@@ -198,8 +196,8 @@ const App: React.FC = () => {
       {/* Heart Gesture Effect */}
       <HeartEffect isActive={isHeartGesture} position={heartPosition} />
 
-      {/* Flash Effect when reaching core */}
-      <FlashEffect isActive={isAtCore} duration={2000} />
+      {/* Flash Effect when reaching deep core */}
+      <FlashEffect isActive={isAtCore} duration={4000} />
     </div>
   );
 };

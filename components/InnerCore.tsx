@@ -3,20 +3,20 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 interface InnerCoreProps {
-  zoomLevel: number; // 8-35, closer = more visible
+  zoomLevel: number; // -10 to 35, closer = more visible
 }
 
 /**
- * Inner Core - Lõi bên trong chỉ hiện khi zoom sâu
- * Tạo cảm giác đi vào center của universe
+ * Inner Core - Thế giới bên trong lõi, chỉ hiện khi zoom SÂU
+ * Tạo cảm giác thám hiểm vào center của vũ trụ
  */
 const InnerCore: React.FC<InnerCoreProps> = ({ zoomLevel }) => {
   const group1Ref = useRef<THREE.Group>(null);
   const group2Ref = useRef<THREE.Group>(null);
   const group3Ref = useRef<THREE.Group>(null);
 
-  // Calculate visibility based on zoom (0 = far, 1 = close)
-  const zoomFactor = (35 - zoomLevel) / (35 - 8);
+  // Calculate visibility based on zoom (0 = far, 1 = deep inside)
+  const zoomFactor = Math.max(0, Math.min(1, (35 - zoomLevel) / (35 - (-10))));
 
   // Layer 1: Outer rings (visible at medium zoom)
   const rings1 = useMemo(() => {
@@ -92,26 +92,128 @@ const InnerCore: React.FC<InnerCoreProps> = ({ zoomLevel }) => {
     if (group1Ref.current) {
       group1Ref.current.rotation.y = time * 0.3;
       group1Ref.current.rotation.z = time * 0.1;
-      // Fade in khi zoom > 0.3
-      group1Ref.current.visible = zoomFactor > 0.3;
+      // Outer rings - hiện khi bắt đầu vào sâu (z < 5)
+      group1Ref.current.visible = zoomFactor > 0.6; // ~z < 5
     }
 
     if (group2Ref.current) {
       group2Ref.current.rotation.y = -time * 0.5;
       group2Ref.current.rotation.x = time * 0.2;
-      // Fade in khi zoom > 0.5
-      group2Ref.current.visible = zoomFactor > 0.5;
+      // Inner sphere - hiện khi zoom sâu hơn (z < 0)
+      group2Ref.current.visible = zoomFactor > 0.75; // ~z < 0
     }
 
     if (group3Ref.current) {
       group3Ref.current.rotation.y = time * 0.8;
-      group3Ref.current.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
-      // Chỉ hiện khi zoom rất sâu > 0.7
-      group3Ref.current.visible = zoomFactor > 0.7;
+      group3Ref.current.scale.setScalar(1 + Math.sin(time * 3) * 0.15); // Pulsing mạnh hơn
+      // Glowing core - chỉ hiện khi RẤT SÂU (z < -5)
+      group3Ref.current.visible = zoomFactor > 0.85; // ~z < -3
     }
   });
 
-  return null;
+  return (
+    <group>
+      {/* Layer 1: Outer Rings */}
+      <group ref={group1Ref}>
+        <points>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={rings1.positions.length / 3}
+              array={rings1.positions}
+              itemSize={3}
+            />
+            <bufferAttribute
+              attach="attributes-color"
+              count={rings1.colors.length / 3}
+              array={rings1.colors}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <pointsMaterial
+            size={0.08}
+            vertexColors
+            transparent
+            opacity={0.8}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </points>
+      </group>
+
+      {/* Layer 2: Inner Sphere */}
+      <group ref={group2Ref}>
+        <points>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={sphere.positions.length / 3}
+              array={sphere.positions}
+              itemSize={3}
+            />
+            <bufferAttribute
+              attach="attributes-color"
+              count={sphere.colors.length / 3}
+              array={sphere.colors}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <pointsMaterial
+            size={0.12}
+            vertexColors
+            transparent
+            opacity={0.9}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </points>
+      </group>
+
+      {/* Layer 3: Glowing Core - LUNG LINH */}
+      <group ref={group3Ref}>
+        <points>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={core.positions.length / 3}
+              array={core.positions}
+              itemSize={3}
+            />
+            <bufferAttribute
+              attach="attributes-color"
+              count={core.colors.length / 3}
+              array={core.colors}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <pointsMaterial
+            size={0.2}
+            vertexColors
+            transparent
+            opacity={1}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </points>
+
+        {/* Central bright core light */}
+        <pointLight intensity={20} distance={5} color="#ffffff" decay={2} />
+        <pointLight intensity={15} distance={3} color="#ffd700" decay={2} position={[0.2, 0, 0]} />
+        <pointLight intensity={15} distance={3} color="#ff3366" decay={2} position={[-0.2, 0, 0]} />
+
+        {/* Ultra bright center sphere */}
+        <mesh>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshBasicMaterial
+            color="#ffffff"
+            transparent
+            opacity={0.8}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      </group>
+    </group>
+  );
 };
 
 export default InnerCore;
