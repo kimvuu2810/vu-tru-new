@@ -24,9 +24,9 @@ export const GESTURE_THRESHOLDS = {
 export const PINCH_ZOOM = {
   MIN_DISTANCE: 0.02,     // Khoảng cách tối thiểu (zoom in max)
   MAX_DISTANCE: 0.15,     // Khoảng cách tối đa (zoom out max)
-  MIN_CAMERA_Z: 2,        // Camera gần nhất (zoom in) - Sâu vào lõi
+  MIN_CAMERA_Z: -2,       // Camera gần nhất (zoom in) - ĐI VÀO TRONG lõi
   MAX_CAMERA_Z: 35,       // Camera xa nhất (zoom out)
   DEFAULT_CAMERA_Z: 20,   // Vị trí camera mặc định
   SMOOTHING: 0.1,         // Độ mượt của zoom (0-1, càng nhỏ càng mượt)
-  CORE_THRESHOLD: 3,      // Threshold để trigger explosion effect
+  CORE_THRESHOLD: 1,      // Threshold để trigger explosion effect
 };

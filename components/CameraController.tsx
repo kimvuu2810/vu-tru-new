@@ -25,10 +25,10 @@ const CameraController: React.FC<CameraControllerProps> = ({ zoomLevel }) => {
     currentZ.current += (targetZ - currentZ.current) * 0.08;
 
     // FOV thay đổi theo zoom (zoom in = FOV tăng = immersive)
-    // At zoom 2 (very close): FOV = 75 (very wide, tunnel vision)
+    // At zoom -2 (INSIDE core): FOV = 90 (extreme wide, inside view)
     // At zoom 35 (far): FOV = 45 (normal)
-    const zoomFactor = (35 - zoomLevel) / (35 - 2); // 0 = far, 1 = very close
-    const targetFOV = 45 + zoomFactor * 30; // 45-75 degrees
+    const zoomFactor = Math.max(0, Math.min(1, (35 - zoomLevel) / (35 - (-2)))); // 0 = far, 1 = inside
+    const targetFOV = 45 + zoomFactor * 45; // 45-90 degrees
     currentFOV.current += (targetFOV - currentFOV.current) * 0.05;
 
     // Apply camera transforms - smooth only, no shake
@@ -43,11 +43,16 @@ const CameraController: React.FC<CameraControllerProps> = ({ zoomLevel }) => {
     }
 
     // Subtle camera tilt when very close (adds drama)
-    if (zoomFactor > 0.6) {
-      const tiltAmount = (zoomFactor - 0.6) * 0.05;
+    if (zoomFactor > 0.7) {
+      const tiltAmount = (zoomFactor - 0.7) * 0.08;
       camera.rotation.z = Math.sin(time * 0.5) * tiltAmount;
+      // Extra rotation when INSIDE core
+      if (zoomLevel < 0) {
+        camera.rotation.y = Math.sin(time * 0.3) * 0.05;
+      }
     } else {
       camera.rotation.z *= 0.95; // Smooth return
+      camera.rotation.y *= 0.95;
     }
   });
 

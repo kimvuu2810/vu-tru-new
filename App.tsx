@@ -34,6 +34,7 @@ const App: React.FC = () => {
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const { settings } = useSettings();
   const { isHeartGesture, heartPosition } = useHeartGesture(landmarks);
+  const [isExploding, setIsExploding] = useState(false);
 
   // UI state
   const [showHelp, setShowHelp] = useState(false);
@@ -44,7 +45,19 @@ const App: React.FC = () => {
   const hasHands = landmarks && landmarks.length > 0;
 
   // Detect core explosion
-  const isAtCore = zoomLevel <= 3;
+  const isAtCore = zoomLevel <= 1;
+
+  // Handle explosion callback
+  const handleExplosion = useCallback(() => {
+    setIsExploding(true);
+
+    // Auto zoom out sau 1.5s
+    setTimeout(() => {
+      // Trigger auto zoom out bằng cách release hands
+      // User sẽ thấy smooth zoom out
+      setIsExploding(false);
+    }, 4000);
+  }, []);
 
   // Show tutorial on first load if enabled
   useEffect(() => {
@@ -104,7 +117,7 @@ const App: React.FC = () => {
         <OrbitControls
           enablePan={false}
           maxDistance={40}
-          minDistance={2}
+          minDistance={0.1}
           autoRotate={settings.autoRotate && !hasHands}
           autoRotateSpeed={0.3}
           minPolarAngle={0.5}
@@ -133,7 +146,7 @@ const App: React.FC = () => {
           <SpeedLines zoomLevel={zoomLevel} />
 
           {/* Core Explosion - Triggers when reaching the core */}
-          <CoreExplosion zoomLevel={zoomLevel} threshold={3} />
+          <CoreExplosion zoomLevel={zoomLevel} threshold={1} onExplode={handleExplosion} />
 
           <SnowParticles expansionFactor={expansionFactor} />
 

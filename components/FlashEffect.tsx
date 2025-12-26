@@ -6,43 +6,81 @@ interface FlashEffectProps {
 }
 
 /**
- * Flash Effect - Hiệu ứng chói lóa toàn màn hình
+ * Epic Flash Effect - Hiệu ứng chói lóa EPIC toàn màn hình
  * Trigger khi zoom vào lõi
  */
-const FlashEffect: React.FC<FlashEffectProps> = ({ isActive, duration = 2000 }) => {
+const FlashEffect: React.FC<FlashEffectProps> = ({ isActive, duration = 3000 }) => {
   const [showFlash, setShowFlash] = useState(false);
   const [intensity, setIntensity] = useState(0);
+  const [pulsePhase, setPulsePhase] = useState(0);
 
   useEffect(() => {
     if (isActive) {
       setShowFlash(true);
+      setPulsePhase(0);
 
-      // Fade in nhanh
-      setTimeout(() => setIntensity(1), 50);
+      // Instant flash
+      setTimeout(() => setIntensity(1), 10);
 
-      // Fade out chậm
+      // First pulse
+      setTimeout(() => setIntensity(0.7), 200);
+      setTimeout(() => setIntensity(1), 400);
+
+      // Second pulse
+      setTimeout(() => setIntensity(0.6), 700);
+      setTimeout(() => setIntensity(0.9), 900);
+
+      // Slow fade out
       setTimeout(() => {
         setIntensity(0);
-      }, duration / 2);
+      }, duration / 1.5);
 
       // Hide hoàn toàn
       setTimeout(() => {
         setShowFlash(false);
       }, duration);
+
+      // Pulse animation
+      const pulseInterval = setInterval(() => {
+        setPulsePhase((prev) => (prev + 0.1) % (Math.PI * 2));
+      }, 50);
+
+      return () => clearInterval(pulseInterval);
     }
   }, [isActive, duration]);
 
   if (!showFlash) return null;
 
+  const pulseScale = 1 + Math.sin(pulsePhase) * 0.05;
+
   return (
     <>
-      {/* Main Flash */}
+      {/* Main Flash - Multiple Layers */}
       <div
         className="fixed inset-0 z-50 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,215,0,0.8) 30%, rgba(255,100,100,0.4) 60%, transparent 100%)',
+          background: `radial-gradient(circle at 50% 50%,
+            rgba(255,255,255,${intensity}) 0%,
+            rgba(255,240,200,${intensity * 0.9}) 20%,
+            rgba(255,215,0,${intensity * 0.7}) 35%,
+            rgba(255,150,80,${intensity * 0.5}) 55%,
+            rgba(255,100,100,${intensity * 0.3}) 70%,
+            transparent 100%)`,
+          transform: `scale(${pulseScale})`,
+          transition: 'opacity 0.2s ease-out',
+        }}
+      />
+
+      {/* Secondary Flash Ring */}
+      <div
+        className="fixed inset-0 z-50 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 50% 50%,
+            transparent 0%,
+            rgba(255,200,100,${intensity * 0.4}) 40%,
+            transparent 60%)`,
           opacity: intensity,
-          transition: intensity === 1 ? 'opacity 0.1s ease-out' : 'opacity 1s ease-out',
+          animation: intensity > 0.5 ? 'expand 2s ease-out infinite' : 'none',
         }}
       />
 
@@ -94,6 +132,16 @@ const FlashEffect: React.FC<FlashEffectProps> = ({ isActive, duration = 2000 }) 
           50% {
             opacity: 1;
             transform: scale(1);
+          }
+        }
+
+        @keyframes expand {
+          0% {
+            transform: scale(1);
+          }
+          100% {
+            transform: scale(1.5);
+            opacity: 0;
           }
         }
       `}</style>
