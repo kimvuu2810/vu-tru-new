@@ -84,14 +84,14 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
         <div className="px-8 py-6 max-h-[70vh] overflow-y-auto">
           {/* Gestures */}
           <div className="mb-8">
-            <h3 className="text-sm uppercase tracking-widest text-cyan-300 mb-4">
+            <h3 className="text-sm uppercase tracking-widest text-white/70 mb-4">
               Hand Gestures
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {gestures.map((gesture, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/30 transition-all"
+                  className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all"
                 >
                   <div className="flex items-start gap-3">
                     <div className="text-3xl">{gesture.icon}</div>
@@ -99,7 +99,7 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
                       <h4 className="text-white font-medium text-sm mb-1">
                         {gesture.title}
                       </h4>
-                      <p className="text-cyan-300 text-xs mb-2">
+                      <p className="text-white/70 text-xs mb-2">
                         {gesture.description}
                       </p>
                       <p className="text-white/50 text-[10px] leading-relaxed">
@@ -114,7 +114,7 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
 
           {/* Keyboard Shortcuts */}
           <div className="mb-6">
-            <h3 className="text-sm uppercase tracking-widest text-cyan-300 mb-4">
+            <h3 className="text-sm uppercase tracking-widest text-white/70 mb-4">
               Keyboard Shortcuts
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -123,7 +123,7 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
                   key={idx}
                   className="p-3 rounded-lg bg-white/5 border border-white/10 text-center"
                 >
-                  <div className="text-xs font-mono text-cyan-400 mb-1 bg-white/5 py-1 px-2 rounded">
+                  <div className="text-xs font-mono text-white/80 mb-1 bg-white/5 py-1 px-2 rounded">
                     {shortcut.key}
                   </div>
                   <p className="text-[9px] text-white/60 uppercase tracking-wide">
@@ -135,25 +135,25 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ onClose }) => {
           </div>
 
           {/* Tips */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20">
-            <h3 className="text-sm uppercase tracking-widest text-cyan-300 mb-3">
+          <div className="p-4 rounded-xl bg-gradient-to-r from-white/10 to-purple-500/10 border border-white/20">
+            <h3 className="text-sm uppercase tracking-widest text-white/70 mb-3">
               💡 Tips
             </h3>
             <ul className="space-y-2 text-xs text-white/70">
               <li className="flex items-start gap-2">
-                <span className="text-cyan-400 mt-0.5">•</span>
+                <span className="text-white/80 mt-0.5">•</span>
                 <span>Use Chrome or Edge for best performance</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-cyan-400 mt-0.5">•</span>
+                <span className="text-white/80 mt-0.5">•</span>
                 <span>Good lighting improves hand tracking accuracy</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-cyan-400 mt-0.5">•</span>
+                <span className="text-white/80 mt-0.5">•</span>
                 <span>Keep your hand centered in the camera view</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-cyan-400 mt-0.5">•</span>
+                <span className="text-white/80 mt-0.5">•</span>
                 <span>Fullscreen mode provides the most immersive experience</span>
               </li>
             </ul>

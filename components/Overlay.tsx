@@ -64,14 +64,14 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
       {/* Pinch Zoom Indicator */}
       {settings.showZoomIndicator && isPinching && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
-          <div className="bg-cyan-500/10 backdrop-blur-xl px-6 py-3 rounded-full border border-cyan-400/30 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+          <div className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/30">
             <div className="flex items-center gap-3">
               <div className="flex gap-1">
-                <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse" />
-                <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse delay-75" />
-                <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse delay-150" />
+                <div className="w-1 h-1 bg-white/80 rounded-full animate-pulse" />
+                <div className="w-1 h-1 bg-white/80 rounded-full animate-pulse delay-75" />
+                <div className="w-1 h-1 bg-white/80 rounded-full animate-pulse delay-150" />
               </div>
-              <p className="text-[10px] text-cyan-300 uppercase tracking-[0.3em] font-light">
+              <p className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-light">
                 Zoom {zoomPercentage}%
               </p>
             </div>
@@ -95,7 +95,7 @@ const Overlay: React.FC<OverlayProps> = ({ appState, videoRef, landmarks, zoomLe
 
             {/* Status Indicator */}
             <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-              <div className={`w-1 h-1 rounded-full ${handCount > 0 ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-white/10'}`} />
+              <div className={`w-1 h-1 rounded-full ${handCount > 0 ? 'bg-white/80 shadow-[0_0_8px_white]' : 'bg-white/10'}`} />
             </div>
           </div>
         </div>

@@ -62,7 +62,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             >
               <button
                 onClick={btn.onClick}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 shadow-lg hover:shadow-cyan-500/20"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 shadow-lg hover:shadow-white/20"
               >
                 <Icon className="w-4 h-4 text-white/70" />
               </button>
