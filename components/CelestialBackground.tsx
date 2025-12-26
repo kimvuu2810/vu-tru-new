@@ -41,17 +41,17 @@ const CelestialBackground: React.FC = () => {
     <group ref={nebulaRef}>
       <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
         <sphereGeometry args={[1, 4, 4]} />
-        <meshBasicMaterial color="#4444ff" transparent opacity={0.15} />
+        <meshBasicMaterial color="#666666" transparent opacity={0.15} />
       </instancedMesh>
-      
+
       {/* Glow dịu nhẹ cho trung tâm */}
       <mesh scale={[50, 50, 50]}>
         <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial 
-          color="#1a0033" 
-          transparent 
-          opacity={0.3} 
-          side={THREE.BackSide} 
+        <meshBasicMaterial
+          color="#1a0033"
+          transparent
+          opacity={0.3}
+          side={THREE.BackSide}
         />
       </mesh>
     </group>
