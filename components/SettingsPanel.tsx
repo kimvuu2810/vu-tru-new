@@ -48,7 +48,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
             </h3>
             <button
               onClick={resetSettings}
-              className="text-xs text-white/40 hover:text-cyan-400 transition-colors flex items-center gap-1"
+              className="text-xs text-white/40 hover:text-white transition-colors flex items-center gap-1"
               title="Reset to defaults"
             >
               <RotateCcw className="w-3 h-3" />
@@ -67,7 +67,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
         <div className="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto">
           {/* Performance */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-cyan-300 mb-3">
+            <h4 className="text-xs uppercase tracking-widest text-white/70 mb-3">
               Performance
             </h4>
             <div className="space-y-4">
@@ -109,7 +109,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                     onClick={() => updateSettings({ visualEffects: true })}
                     className={`flex-1 h-8 rounded-lg border transition-all ${
                       settings.visualEffects
-                        ? 'bg-cyan-500/20 border-cyan-400/30 text-cyan-300'
+                        ? 'bg-white/20 border-white/30 text-white'
                         : 'bg-white/5 border-white/10 text-white/40'
                     }`}
                   >
@@ -119,7 +119,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                     onClick={() => updateSettings({ visualEffects: false })}
                     className={`flex-1 h-8 rounded-lg border transition-all ${
                       !settings.visualEffects
-                        ? 'bg-cyan-500/20 border-cyan-400/30 text-cyan-300'
+                        ? 'bg-white/20 border-white/30 text-white'
                         : 'bg-white/5 border-white/10 text-white/40'
                     }`}
                   >
@@ -132,7 +132,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
 
           {/* Hand Tracking */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-cyan-300 mb-3">
+            <h4 className="text-xs uppercase tracking-widest text-white/70 mb-3">
               Hand Tracking
             </h4>
             <div className="space-y-4">
@@ -188,7 +188,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
 
           {/* Display */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-cyan-300 mb-3">
+            <h4 className="text-xs uppercase tracking-widest text-white/70 mb-3">
               Display
             </h4>
             <div className="space-y-3">
@@ -201,14 +201,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                 <div
                   className={`w-10 h-5 rounded-full relative transition-all ${
                     settings.showHandVisualizer
-                      ? 'bg-cyan-500/30 border border-cyan-400/50'
+                      ? 'bg-white/30 border border-white/50'
                       : 'bg-white/10 border border-white/20'
                   }`}
                 >
                   <div
                     className={`absolute top-0.5 w-4 h-4 rounded-full shadow-lg transition-all ${
                       settings.showHandVisualizer
-                        ? 'right-0.5 bg-cyan-400'
+                        ? 'right-0.5 bg-white'
                         : 'left-0.5 bg-white/40'
                     }`}
                   />
@@ -224,14 +224,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                 <div
                   className={`w-10 h-5 rounded-full relative transition-all ${
                     settings.showZoomIndicator
-                      ? 'bg-cyan-500/30 border border-cyan-400/50'
+                      ? 'bg-white/30 border border-white/50'
                       : 'bg-white/10 border border-white/20'
                   }`}
                 >
                   <div
                     className={`absolute top-0.5 w-4 h-4 rounded-full shadow-lg transition-all ${
                       settings.showZoomIndicator
-                        ? 'right-0.5 bg-cyan-400'
+                        ? 'right-0.5 bg-white'
                         : 'left-0.5 bg-white/40'
                     }`}
                   />
@@ -247,14 +247,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                 <div
                   className={`w-10 h-5 rounded-full relative transition-all ${
                     settings.autoRotate
-                      ? 'bg-cyan-500/30 border border-cyan-400/50'
+                      ? 'bg-white/30 border border-white/50'
                       : 'bg-white/10 border border-white/20'
                   }`}
                 >
                   <div
                     className={`absolute top-0.5 w-4 h-4 rounded-full shadow-lg transition-all ${
                       settings.autoRotate
-                        ? 'right-0.5 bg-cyan-400'
+                        ? 'right-0.5 bg-white'
                         : 'left-0.5 bg-white/40'
                     }`}
                   />
@@ -270,14 +270,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                 <div
                   className={`w-10 h-5 rounded-full relative transition-all ${
                     settings.showFPS
-                      ? 'bg-cyan-500/30 border border-cyan-400/50'
+                      ? 'bg-white/30 border border-white/50'
                       : 'bg-white/10 border border-white/20'
                   }`}
                 >
                   <div
                     className={`absolute top-0.5 w-4 h-4 rounded-full shadow-lg transition-all ${
                       settings.showFPS
-                        ? 'right-0.5 bg-cyan-400'
+                        ? 'right-0.5 bg-white'
                         : 'left-0.5 bg-white/40'
                     }`}
                   />
@@ -288,7 +288,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
 
           {/* Stats */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-cyan-300 mb-3">
+            <h4 className="text-xs uppercase tracking-widest text-white/70 mb-3">
               Statistics
             </h4>
             <div className="p-4 rounded-lg bg-white/5 border border-white/10 space-y-2">
@@ -310,7 +310,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
               </div>
               <div className="flex justify-between text-[10px]">
                 <span className="text-white/50">Hands Detected</span>
-                <span className={`font-mono ${handCount > 0 ? 'text-cyan-400' : 'text-white/40'}`}>
+                <span className={`font-mono ${handCount > 0 ? 'text-white/80' : 'text-white/40'}`}>
                   {handCount}
                 </span>
               </div>
@@ -327,7 +327,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-white/10 bg-black/20">
           <p className="text-[9px] text-white/40 text-center uppercase tracking-widest">
-            Settings auto-saved to localStorage
+            Settings reset on page reload
           </p>
         </div>
       </div>
