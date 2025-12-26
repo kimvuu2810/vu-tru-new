@@ -17,30 +17,63 @@ interface HTMLElementWithFullscreen extends HTMLElement {
   msRequestFullscreen?: (options?: FullscreenOptions) => Promise<void>;
 }
 
+// Extend Navigator for iOS detection
+interface NavigatorWithStandalone extends Navigator {
+  standalone?: boolean;
+}
+
+/**
+ * Detect if running on iOS (iPhone/iPad)
+ */
+const isIOS = (): boolean => {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+};
+
+/**
+ * Check if running in standalone mode (PWA)
+ */
+const isStandalone = (): boolean => {
+  const nav = navigator as NavigatorWithStandalone;
+  return (
+    nav.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches
+  );
+};
+
 /**
  * Hook để quản lý fullscreen mode với cross-browser support
- * Hỗ trợ iOS Safari, Android Chrome, và các browsers khác
- * @returns {isFullscreen, toggleFullscreen, exitFullscreen, isSupported}
+ * Hỗ trợ iOS Safari (với fake fullscreen), Android Chrome, và các browsers khác
+ * @returns {isFullscreen, toggleFullscreen, exitFullscreen, isSupported, useFakeFullscreen}
  */
 export const useFullscreen = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
+  const [useFakeFullscreen, setUseFakeFullscreen] = useState(false);
 
   // Detect if fullscreen is supported
   useEffect(() => {
     const doc = document as DocumentWithFullscreen;
     const elem = document.documentElement as HTMLElementWithFullscreen;
 
-    const supported = !!(
+    const hasFullscreenAPI = !!(
       elem.requestFullscreen ||
       elem.webkitRequestFullscreen ||
       elem.mozRequestFullScreen ||
       elem.msRequestFullscreen
     );
 
-    setIsSupported(supported);
+    // iOS Safari doesn't support Fullscreen API on iPhone (only iPad 16.4+)
+    // Use fake fullscreen for iOS devices
+    const isiOSDevice = isIOS();
+    const shouldUseFake = isiOSDevice && !hasFullscreenAPI;
 
-    if (!supported) {
+    setIsSupported(hasFullscreenAPI || shouldUseFake);
+    setUseFakeFullscreen(shouldUseFake);
+
+    if (shouldUseFake) {
+      console.info('iOS detected: Using fake fullscreen mode. For true fullscreen, add to Home Screen.');
+    } else if (!hasFullscreenAPI) {
       console.warn('Fullscreen API not supported on this device');
     }
   }, []);
@@ -101,7 +134,7 @@ export const useFullscreen = () => {
     setIsFullscreen(!!getFullscreenElement());
   }, [getFullscreenElement]);
 
-  // Toggle fullscreen
+  // Toggle fullscreen (with fake fullscreen fallback for iOS)
   const toggleFullscreen = useCallback(async () => {
     if (!isSupported) {
       console.warn('Fullscreen not supported');
@@ -109,6 +142,25 @@ export const useFullscreen = () => {
     }
 
     try {
+      // Use fake fullscreen for iOS
+      if (useFakeFullscreen) {
+        const isCurrentlyFullscreen = document.body.classList.contains('fake-fullscreen');
+
+        if (!isCurrentlyFullscreen) {
+          // Enter fake fullscreen
+          document.body.classList.add('fake-fullscreen');
+          // Scroll to top to hide Safari address bar
+          window.scrollTo(0, 1);
+          setIsFullscreen(true);
+        } else {
+          // Exit fake fullscreen
+          document.body.classList.remove('fake-fullscreen');
+          setIsFullscreen(false);
+        }
+        return;
+      }
+
+      // Use real fullscreen API
       if (!getFullscreenElement()) {
         // Enter fullscreen
         await requestFullscreen();
@@ -121,11 +173,21 @@ export const useFullscreen = () => {
     } catch (error) {
       console.error('Fullscreen toggle error:', error);
     }
-  }, [isSupported, getFullscreenElement, requestFullscreen, exitFullscreenInternal]);
+  }, [isSupported, useFakeFullscreen, getFullscreenElement, requestFullscreen, exitFullscreenInternal]);
 
   // Exit fullscreen (public API)
   const exitFullscreen = useCallback(async () => {
     try {
+      // Handle fake fullscreen
+      if (useFakeFullscreen) {
+        if (document.body.classList.contains('fake-fullscreen')) {
+          document.body.classList.remove('fake-fullscreen');
+          setIsFullscreen(false);
+        }
+        return;
+      }
+
+      // Handle real fullscreen
       if (getFullscreenElement()) {
         await exitFullscreenInternal();
         setIsFullscreen(false);
@@ -133,7 +195,7 @@ export const useFullscreen = () => {
     } catch (error) {
       console.error('Exit fullscreen error:', error);
     }
-  }, [getFullscreenElement, exitFullscreenInternal]);
+  }, [useFakeFullscreen, getFullscreenElement, exitFullscreenInternal]);
 
   // Listen for fullscreen changes (with vendor prefixes)
   useEffect(() => {
@@ -170,5 +232,5 @@ export const useFullscreen = () => {
     };
   }, [toggleFullscreen]);
 
-  return { isFullscreen, toggleFullscreen, exitFullscreen, isSupported };
+  return { isFullscreen, toggleFullscreen, exitFullscreen, isSupported, useFakeFullscreen };
 };
