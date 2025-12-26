@@ -7,6 +7,7 @@ import { useHandTracking } from './hooks/useHandTracking';
 import { useCombinedZoom } from './hooks/useCombinedZoom';
 import { useFullscreen } from './hooks/useFullscreen';
 import { useSettings } from './contexts/SettingsContext';
+import { useHeartGesture } from './hooks/useHeartGesture';
 import MagicParticles from './components/MagicParticles';
 import SnowParticles from './components/SnowParticles';
 import CelestialBackground from './components/CelestialBackground';
@@ -18,6 +19,7 @@ import ControlPanel from './components/ControlPanel';
 import HelpOverlay from './components/HelpOverlay';
 import SettingsPanel from './components/SettingsPanel';
 import TutorialOverlay from './components/TutorialOverlay';
+import HeartEffect from './components/HeartEffect';
 import FPSCounter from './components/FPSCounter';
 import InnerCore from './components/InnerCore';
 import SpeedLines from './components/SpeedLines';
@@ -29,6 +31,7 @@ const App: React.FC = () => {
   const zoomLevel = useCombinedZoom(landmarks);
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const { settings } = useSettings();
+  const { isHeartGesture, heartPosition } = useHeartGesture(landmarks);
 
   // UI state
   const [showHelp, setShowHelp] = useState(false);
@@ -170,6 +173,9 @@ const App: React.FC = () => {
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
       {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} landmarks={landmarks} />}
       {showTutorial && <TutorialOverlay onClose={() => setShowTutorial(false)} />}
+
+      {/* Heart Gesture Effect */}
+      <HeartEffect isActive={isHeartGesture} position={heartPosition} />
     </div>
   );
 };
