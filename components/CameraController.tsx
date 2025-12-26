@@ -25,10 +25,10 @@ const CameraController: React.FC<CameraControllerProps> = ({ zoomLevel }) => {
     currentZ.current += (targetZ - currentZ.current) * 0.08;
 
     // FOV thay đổi theo zoom (zoom in = FOV tăng = immersive)
-    // At zoom 8 (close): FOV = 55 (wider)
+    // At zoom 2 (very close): FOV = 75 (very wide, tunnel vision)
     // At zoom 35 (far): FOV = 45 (normal)
-    const zoomFactor = (35 - zoomLevel) / (35 - 8); // 0 = far, 1 = close
-    const targetFOV = 45 + zoomFactor * 15; // 45-60 degrees
+    const zoomFactor = (35 - zoomLevel) / (35 - 2); // 0 = far, 1 = very close
+    const targetFOV = 45 + zoomFactor * 30; // 45-75 degrees
     currentFOV.current += (targetFOV - currentFOV.current) * 0.05;
 
     // Apply camera transforms - smooth only, no shake

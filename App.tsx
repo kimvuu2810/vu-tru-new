@@ -20,6 +20,8 @@ import HelpOverlay from './components/HelpOverlay';
 import SettingsPanel from './components/SettingsPanel';
 import TutorialOverlay from './components/TutorialOverlay';
 import HeartEffect from './components/HeartEffect';
+import CoreExplosion from './components/CoreExplosion';
+import FlashEffect from './components/FlashEffect';
 import FPSCounter from './components/FPSCounter';
 import InnerCore from './components/InnerCore';
 import SpeedLines from './components/SpeedLines';
@@ -40,6 +42,9 @@ const App: React.FC = () => {
   const [screenshotFunc, setScreenshotFunc] = useState<(() => void) | null>(null);
 
   const hasHands = landmarks && landmarks.length > 0;
+
+  // Detect core explosion
+  const isAtCore = zoomLevel <= 3;
 
   // Show tutorial on first load if enabled
   useEffect(() => {
@@ -99,7 +104,7 @@ const App: React.FC = () => {
         <OrbitControls
           enablePan={false}
           maxDistance={40}
-          minDistance={10}
+          minDistance={2}
           autoRotate={settings.autoRotate && !hasHands}
           autoRotateSpeed={0.3}
           minPolarAngle={0.5}
@@ -126,6 +131,9 @@ const App: React.FC = () => {
 
           {/* Speed Lines - Shows when zooming fast */}
           <SpeedLines zoomLevel={zoomLevel} />
+
+          {/* Core Explosion - Triggers when reaching the core */}
+          <CoreExplosion zoomLevel={zoomLevel} threshold={3} />
 
           <SnowParticles expansionFactor={expansionFactor} />
 
@@ -176,6 +184,9 @@ const App: React.FC = () => {
 
       {/* Heart Gesture Effect */}
       <HeartEffect isActive={isHeartGesture} position={heartPosition} />
+
+      {/* Flash Effect when reaching core */}
+      <FlashEffect isActive={isAtCore} duration={2000} />
     </div>
   );
 };
