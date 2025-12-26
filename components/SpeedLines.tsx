@@ -77,17 +77,7 @@ const SpeedLines: React.FC<SpeedLinesProps> = ({ zoomLevel }) => {
     linesRef.current.rotation.z += zoomDelta * 0.5;
   });
 
-  return (
-    <lineSegments ref={linesRef} geometry={lineGeometry}>
-      <lineBasicMaterial
-        vertexColors
-        transparent
-        opacity={0}
-        blending={THREE.AdditiveBlending}
-        linewidth={2}
-      />
-    </lineSegments>
-  );
+  return null;
 };
 
 export default SpeedLines;
