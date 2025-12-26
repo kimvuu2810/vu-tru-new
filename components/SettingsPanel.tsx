@@ -283,6 +283,29 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose, landmarks }) => 
                   />
                 </div>
               </label>
+
+              {/* Tutorial Toggle */}
+              <label
+                className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all"
+                onClick={() => updateSettings({ showTutorial: !settings.showTutorial })}
+              >
+                <span className="text-xs text-white/70">Show Tutorial on Start</span>
+                <div
+                  className={`w-10 h-5 rounded-full relative transition-all ${
+                    settings.showTutorial
+                      ? 'bg-white/30 border border-white/50'
+                      : 'bg-white/10 border border-white/20'
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 w-4 h-4 rounded-full shadow-lg transition-all ${
+                      settings.showTutorial
+                        ? 'right-0.5 bg-white'
+                        : 'left-0.5 bg-white/40'
+                    }`}
+                  />
+                </div>
+              </label>
             </div>
           </div>
 

@@ -17,6 +17,7 @@ import Overlay from './components/Overlay';
 import ControlPanel from './components/ControlPanel';
 import HelpOverlay from './components/HelpOverlay';
 import SettingsPanel from './components/SettingsPanel';
+import TutorialOverlay from './components/TutorialOverlay';
 import FPSCounter from './components/FPSCounter';
 import InnerCore from './components/InnerCore';
 import SpeedLines from './components/SpeedLines';
@@ -32,9 +33,21 @@ const App: React.FC = () => {
   // UI state
   const [showHelp, setShowHelp] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [screenshotFunc, setScreenshotFunc] = useState<(() => void) | null>(null);
 
   const hasHands = landmarks && landmarks.length > 0;
+
+  // Show tutorial on first load if enabled
+  useEffect(() => {
+    if (settings.showTutorial && appState !== 'loading') {
+      const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+      if (!hasSeenTutorial) {
+        setShowTutorial(true);
+        localStorage.setItem('hasSeenTutorial', 'true');
+      }
+    }
+  }, [settings.showTutorial, appState]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -47,10 +60,15 @@ const App: React.FC = () => {
       if (e.key === 's' || e.key === 'S') {
         if (screenshotFunc) screenshotFunc();
       }
+      // T key for Tutorial
+      if (e.key === 't' || e.key === 'T') {
+        setShowTutorial((prev) => !prev);
+      }
       // ESC key to close overlays
       if (e.key === 'Escape') {
         setShowHelp(false);
         setShowSettings(false);
+        setShowTutorial(false);
       }
     };
 
@@ -151,6 +169,7 @@ const App: React.FC = () => {
 
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
       {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} landmarks={landmarks} />}
+      {showTutorial && <TutorialOverlay onClose={() => setShowTutorial(false)} />}
     </div>
   );
 };
