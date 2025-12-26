@@ -54,7 +54,7 @@ const InnerCore: React.FC<InnerCoreProps> = ({ zoomLevel }) => {
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = radius * Math.cos(phi);
 
-      const color = new THREE.Color().setHSL(0.55 + Math.random() * 0.1, 1, 0.6);
+      const color = new THREE.Color('#ffffff');
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
